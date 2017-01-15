@@ -146,7 +146,7 @@ class PlanSchemaTestCase(unittest.TestCase):
         self.assertTrue("status" in plan)
         self.assertTrue("create_stamp" not in plan)
         self.assertTrue("edit_stamp" not in plan)
-        self.assertTrue("wms" in plan)
+        self.assertTrue("wms" not in plan)
 
         self.assertTrue("_links" in plan)
 

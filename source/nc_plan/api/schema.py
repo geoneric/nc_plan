@@ -77,12 +77,12 @@ class PlanSchema(ma.Schema):
         if not many:
             if data["wms"] is not None:
                 data["_links"]["wms"] = data["wms"]
-                del data["wms"]
+            del data["wms"]
         else:
             for plan in data:
                 if plan["wms"] is not None:
                     plan["_links"]["wms"] = plan["wms"]
-                    del plan["wms"]
+                del plan["wms"]
 
         key = self.key(many)
 

@@ -113,6 +113,7 @@ class PlanTestCase(unittest.TestCase):
         self.assertTrue("id" not in plan)
         self.assertTrue("create_stamp" not in plan)
         self.assertTrue("edit_stamp" not in plan)
+        self.assertTrue("wms" not in plan)
 
         self.assertTrue("user" in plan)
         self.assertEqual(plan["user"], str(self.user1))
@@ -131,7 +132,7 @@ class PlanTestCase(unittest.TestCase):
         self.assertEqual(links["self"], uri)
 
         self.assertTrue("collection" in links)
-        self.assertFalse("wms" in links)
+        self.assertTrue("wms" not in links)
 
 
     def test_get_unexisting_plan(self):
