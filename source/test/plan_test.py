@@ -38,8 +38,8 @@ class PlanTestCase(unittest.TestCase):
             {
                 "user": self.user2,
                 "pathname": "/some_path/plan2.png",
+                "layer_name": "my_layer",
                 "status": "registered",
-                "wms": "assessment/geoserver/my_plan/wms/plan2"
             },
         ]
 
@@ -113,13 +113,15 @@ class PlanTestCase(unittest.TestCase):
         self.assertTrue("id" not in plan)
         self.assertTrue("create_stamp" not in plan)
         self.assertTrue("edit_stamp" not in plan)
-        self.assertTrue("wms" not in plan)
 
         self.assertTrue("user" in plan)
         self.assertEqual(plan["user"], str(self.user1))
 
         self.assertTrue("pathname" in plan)
         self.assertEqual(plan["pathname"], "/some_path/plan1.png")
+
+        self.assertTrue("layer_name" in plan)
+        self.assertEqual(plan["layer_name"], "")
 
         self.assertTrue("status" in plan)
         self.assertEqual(plan["status"], "uploaded")
@@ -132,7 +134,6 @@ class PlanTestCase(unittest.TestCase):
         self.assertEqual(links["self"], uri)
 
         self.assertTrue("collection" in links)
-        self.assertTrue("wms" not in links)
 
 
     def test_get_unexisting_plan(self):
@@ -163,8 +164,8 @@ class PlanTestCase(unittest.TestCase):
         payload = {
             "user": user_id,
             "pathname": "/some_path/plan.png",
+            "layer_name": "my_layer",
             "status": "registered",
-            "wms": "assessment/geoserver/my_plan/wms/plan"
         }
         response = self.client.post("/plans",
             data=json.dumps({"plan": payload}),
@@ -187,13 +188,15 @@ class PlanTestCase(unittest.TestCase):
         self.assertTrue("pathname" in plan)
         self.assertEqual(plan["pathname"], "/some_path/plan.png")
 
+        self.assertTrue("layer_name" in plan)
+        self.assertEqual(plan["layer_name"], "my_layer")
+
         self.assertTrue("_links" in plan)
 
         links = plan["_links"]
 
         self.assertTrue("self" in links)
         self.assertTrue("collection" in links)
-        self.assertTrue("wms" in links)
 
 
     def test_post_bad_request(self):

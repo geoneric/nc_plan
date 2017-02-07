@@ -11,6 +11,7 @@ api_restful.add_resource(PlansAllResource,
 
 # Plan by user-id and plan-id.
 # - Get plan by user-id and plan-id
+# - Patch plan by user-id and plan-id
 api_restful.add_resource(PlanResource,
     "/plans/<uuid:user_id>/<uuid:plan_id>",
     endpoint="plan")

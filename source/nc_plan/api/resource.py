@@ -31,6 +31,40 @@ class PlanResource(Resource):
         return data
 
 
+    def patch(self,
+            user_id,
+            plan_id):
+
+        json_data = request.get_json()
+
+        if json_data is None:
+            raise BadRequest("No input data provided")
+
+
+        # user_id is not needed
+        plan = PlanModel.query.get(plan_id)
+
+        if plan is None or plan.user != user_id:
+            raise BadRequest("Plan could not be found")
+
+
+        # Merge current representation and the edits passed in.
+        for field_name in json_data:
+            if hasattr(plan, field_name):
+                setattr(plan, field_name, json_data[field_name])
+
+        db.session.commit()
+
+
+        data, errors = plan_schema.dump(plan)
+
+        if errors:
+            raise InternalServerError(errors)
+
+
+        return data
+
+
 class PlansResource(Resource):
 
     def get(self,

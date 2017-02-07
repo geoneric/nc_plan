@@ -77,7 +77,24 @@ class PlanSchemaTestCase(unittest.TestCase):
 
         self.assertTrue(errors)
         self.assertEqual(errors, {
-            "pathname": ["Data not provided"]
+            "pathname": ["Shorter than minimum length 1."]
+        })
+
+
+    def test_empty_layer_name(self):
+        client_data = {
+            "plan": {
+                "user": uuid.uuid4(),
+                "pathname": "/my_path",
+                "layer_name": "",
+                "status": "registered",
+            }
+        }
+        data, errors = self.schema.load(client_data)
+
+        self.assertTrue(errors)
+        self.assertEqual(errors, {
+            "layer_name": ["Shorter than minimum length 1."]
         })
 
 
@@ -93,8 +110,7 @@ class PlanSchemaTestCase(unittest.TestCase):
 
         self.assertTrue(errors)
         self.assertEqual(errors, {
-            "status": ["Value must be one of: uploaded, registered, "
-                "georeferenced, reclassed"]
+            "status": ["Not a valid choice."]
         })
 
 
@@ -120,6 +136,9 @@ class PlanSchemaTestCase(unittest.TestCase):
         self.assertTrue(hasattr(data, "pathname"))
         self.assertEqual(data.pathname, "my_path/blah_plan.png")
 
+        self.assertTrue(hasattr(data, "layer_name"))
+        self.assertEqual(data.layer_name, "")
+
         self.assertTrue(hasattr(data, "create_stamp"))
         self.assertTrue(isinstance(data.create_stamp, datetime.datetime))
 
@@ -128,9 +147,6 @@ class PlanSchemaTestCase(unittest.TestCase):
 
         self.assertTrue(hasattr(data, "status"))
         self.assertEqual(data.status, "uploaded")
-
-        self.assertTrue(hasattr(data, "wms"))
-        self.assertTrue(data.wms is None)
 
         data.id = uuid.uuid4()
         data, errors = self.schema.dump(data)
@@ -143,10 +159,10 @@ class PlanSchemaTestCase(unittest.TestCase):
         self.assertTrue("id" not in plan)
         self.assertTrue("user" in plan)
         self.assertTrue("pathname" in plan)
+        self.assertTrue("layer_name" in plan)
         self.assertTrue("status" in plan)
         self.assertTrue("create_stamp" not in plan)
         self.assertTrue("edit_stamp" not in plan)
-        self.assertTrue("wms" not in plan)
 
         self.assertTrue("_links" in plan)
 
@@ -154,7 +170,6 @@ class PlanSchemaTestCase(unittest.TestCase):
 
         self.assertTrue("self" in links)
         self.assertTrue("collection" in links)
-        self.assertTrue("wms" not in links)
 
 
     def test_usecase2(self):
@@ -164,16 +179,11 @@ class PlanSchemaTestCase(unittest.TestCase):
                 "user": uuid.uuid4(),
                 "pathname": "my_path/blah_plan.png",
                 "status": "uploaded",
-                "wms": "assessment/geoserver/my_plan/wms/plan"
             }
         }
         data, errors = self.schema.load(client_data)
 
         self.assertFalse(errors)
-
-        self.assertTrue(hasattr(data, "wms"))
-        self.assertEqual(data.wms,
-            "assessment/geoserver/my_plan/wms/plan")
 
         data.id = uuid.uuid4()
         data, errors = self.schema.dump(data)
@@ -183,15 +193,9 @@ class PlanSchemaTestCase(unittest.TestCase):
 
         plan = data["plan"]
 
-        self.assertTrue("wms" not in plan)
-
         self.assertTrue("_links" in plan)
 
         links = plan["_links"]
-
-        self.assertTrue("wms" in links)
-        self.assertEqual(links["wms"],
-            "assessment/geoserver/my_plan/wms/plan")
 
 
 if __name__ == "__main__":
