@@ -50,22 +50,30 @@ class PlanSchema(ma.Schema):
         return data[key]
 
 
+    def wrap_links(self,
+            plan):
+        # Insert links that are useful, given the state of the plan.
+        if plan["status"] == "registered":
+            plan["_links"]["georeference"] = "{}/georeference".format(
+                plan["_links"]["self"])
+        elif plan["status"] == "georeferenced":
+            plan["_links"]["colors"] = "{}/colors".format(
+                plan["_links"]["self"])
+            plan["_links"]["reclassify"] = "{}/reclassify".format(
+                plan["_links"]["self"])
+
+
     @post_dump(
         pass_many=True)
     def wrap(self,
             data,
             many):
 
-        # Move wms uri to _links.
         if not many:
-            if data["status"] == "registered":
-                data["_links"]["georeference"] = "{}/georeference".format(
-                    data["_links"]["self"])
+            self.wrap_links(data)
         else:
             for plan in data:
-                if plan["status"] == "registered":
-                    plan["_links"]["georeference"] = "{}/georeference".format(
-                        plan["_links"]["self"])
+                self.wrap_links(plan)
 
         key = self.key(many)
 
