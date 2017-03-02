@@ -10,7 +10,7 @@ statuses = [
 
     "georeferenced",
 
-    "reclassed"
+    "classified"
 ]
 
 

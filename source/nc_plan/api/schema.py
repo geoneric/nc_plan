@@ -59,7 +59,7 @@ class PlanSchema(ma.Schema):
         elif plan["status"] == "georeferenced":
             plan["_links"]["colors"] = "{}/colors".format(
                 plan["_links"]["self"])
-            plan["_links"]["reclassify"] = "{}/reclassify".format(
+            plan["_links"]["classify"] = "{}/classify".format(
                 plan["_links"]["self"])
 
 
