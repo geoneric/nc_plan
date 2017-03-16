@@ -40,11 +40,11 @@ class DevelopmentConfiguration(Configuration):
         Debug(app)
 
 
-class TestingConfiguration(Configuration):
+class TestConfiguration(Configuration):
 
-    SERVER_NAME = os.environ.get("NC_PLAN_SERVER_NAME") or \
-        "localhost"
-    TESTING = True
+    # SERVER_NAME = os.environ.get("NC_PLAN_SERVER_NAME") or \
+    #     "localhost"
+    # TESTING = True
 
     SQLALCHEMY_DATABASE_URI = \
         os.environ.get("NC_PLAN_TEST_DATABASE_URI") or \
@@ -62,6 +62,7 @@ class ProductionConfiguration(Configuration):
 
 configuration = {
     "development": DevelopmentConfiguration,
-    "testing": TestingConfiguration,
+    "test": TestConfiguration,
+    "acceptance": ProductionConfiguration,
     "production": ProductionConfiguration
 }

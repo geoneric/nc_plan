@@ -9,7 +9,9 @@ class PlanSchemaTestCase(unittest.TestCase):
 
 
     def setUp(self):
-        self.app = create_app("testing")
+        self.app = create_app("test")
+        self.app.config["TESTING"] = True
+        self.app.config["SERVER_NAME"] = "localhost"
 
         self.app_context = self.app.app_context()
         self.app_context.push()

@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
+# This script is run from within the running container.
 set -e
 
 
-if [ "$ENV" = "DEVELOPMENT" ]; then
+echo "Starting service in $NC_CONFIGURATION mode"
+
+if [[ "$NC_CONFIGURATION" == @("development"|"test") ]]; then
     exec python server_flask.py
-elif [ "$ENV" = "TEST" ]; then
-    exec python -m unittest discover test *_test.py
 else
+    # Acceptance, production
     exec uwsgi uwsgi.ini
 fi
